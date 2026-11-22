@@ -23,7 +23,60 @@ def year_temperatures_plot(country : str, dataset : pd.DataFrame):
     plt.ylabel("Temperatura media di picco")
     plt.title(f"Evoluzione temperatura {country}")
     plt.show()
- 
+
+def n_fires_plot(country : str, dataset : pd.DataFrame):
+    country_fires = dataset[["Year", country]].dropna().copy()
+    # Asse x: Anno
+    years = country_fires["Year"].to_list()
+    n_of_fires = country_fires[country].to_list()
+    
+    plt.plot(years, n_of_fires)
+    plt.xlabel("Anno")
+    plt.ylabel("Numero di incendi")
+    plt.title(f"Evoluzione numero di incendi {country}")
+    plt.show()
+
+def burnt_area_plot(country : str, dataset : pd.DataFrame):
+    country_fires = dataset[["Year", country]].dropna().copy()
+    # Asse x: Anno
+    years = country_fires["Year"].to_list()
+    burnt_areas = country_fires[country].to_list()
+    
+    plt.plot(years, burnt_areas)
+    plt.xlabel("Anno")
+    plt.ylabel("Aree incendiate")
+    plt.title(f"Evoluzione aree incendiate {country}")
+    plt.show()
+
+
+def cities_avgtemp_plot(country : str, year : int, dataset : pd.DataFrame):
+    country_year_temps = dataset[dataset["Country"] == country]
+    country_year_temps = country_year_temps[pd.to_datetime(country_year_temps["dt"]).dt.year == year].dropna().copy()
+    
+    #Estrazione città e temperature massime per città
+    cities_max_temps = country_year_temps[["City", "AverageTemperature"]].groupby(["City"]).max()
+    #Temperatura media delle massime temperature per città
+    avg_temp = cities_max_temps["AverageTemperature"].mean()
+
+    #Estrazione città e temperature
+    cities = country_year_temps["City"].drop_duplicates().to_list()
+    avg_temps = cities_max_temps["AverageTemperature"].to_list()
+
+    fig, ax = plt.subplots(figsize = (10,5))
+
+    ax.scatter(
+        cities,
+        avg_temps,
+        color="steelblue"
+    )
+    ax.axhline(
+        avg_temp,
+        color="crimson",
+        linewidth=1.5,
+        label=f"Media: {avg_temp}"
+    )
+    plt.show()
+    
       
 
 
